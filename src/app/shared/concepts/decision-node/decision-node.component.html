@@ -1,11 +1,28 @@
-<div class="node" #nodeRef>
-  {{ node.note }}
-</div>
+<div class="decision-node-wrapper" #container>
+  @if (node.children?.length) {
+    <svg class="connector">
+      @for (child of childCoords; track child.x) {
+        <line
+          [attr.x1]="selfCoord.x"
+          [attr.y1]="selfCoord.y"
+          [attr.x2]="child.x"
+          [attr.y2]="child.y"
+          stroke="black"
+          stroke-width="2"
+        />
+      }
+    </svg>
+  }
 
-@if (node.children?.length) {
-  <div class="children">
-    @for (child of node.children; track child.id) {
-      <app-decision-node [node]="child"></app-decision-node>
-    }
+  <div class="node" #nodeRef>
+    {{ node.note }}
   </div>
-}
+
+  @if (node.children?.length) {
+    <div class="children">
+      @for (child of node.children; track child.id) {
+        <app-decision-node [node]="child"></app-decision-node>
+      }
+    </div>
+  }
+</div>
