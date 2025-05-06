@@ -1,22 +1,12 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import {gsap} from 'gsap';
+import { FlowerComponent } from '../../shared/garden/flower/flower.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [FlowerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
-  @ViewChild('titulo') titulo!: ElementRef;
-
-  ngAfterViewInit() {
-    gsap.to(this.titulo.nativeElement, {
-      duration: 1,
-      opacity: 1,
-      y: 20,
-      ease: 'power2.out',
-    });
-  }
-}
+export class HomeComponent {}
