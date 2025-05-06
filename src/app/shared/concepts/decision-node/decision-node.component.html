@@ -1,0 +1,11 @@
+<div class="node" #nodeRef>
+  {{ node.note }}
+</div>
+
+@if (node.children?.length) {
+  <div class="children">
+    @for (child of node.children; track child.id) {
+      <app-decision-node [node]="child"></app-decision-node>
+    }
+  </div>
+}

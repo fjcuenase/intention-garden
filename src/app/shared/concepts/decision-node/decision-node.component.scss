@@ -1,0 +1,19 @@
+.node {
+  background-color: #fff3cd;
+  border: 2px solid #ffeeba;
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: inline-block;
+  margin: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  transform-origin: center;
+  cursor: pointer;
+}
+
+.children {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

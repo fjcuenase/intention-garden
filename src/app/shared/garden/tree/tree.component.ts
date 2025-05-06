@@ -1,38 +1,52 @@
-import {
-  Component,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
-import { BranchComponent } from '../branch/branch.component';
-import { gsap } from 'gsap';
+import { Component } from '@angular/core';
+import { DecisionNode } from '../../concepts/decision-node/models/decision-node.model';
+import { DecisionNodeComponent } from '../../concepts/decision-node/decision-node.component';
 
 @Component({
   selector: 'app-tree',
   standalone: true,
-  imports: [BranchComponent],
+  imports: [DecisionNodeComponent],
   templateUrl: './tree.component.html',
   styleUrl: './tree.component.scss',
 })
 export class TreeComponent {
-  @ViewChildren(BranchComponent) branches!: QueryList<BranchComponent>;
-
-  ngAfterViewInit(): void {
-    const masterTimeline = gsap.timeline({ delay: 0.5 });
-
-    this.branches.forEach((branch, index) => {
-      const branchElement = branch.element.nativeElement;
-
-      masterTimeline.fromTo(
-        branchElement,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: 'power2.out',
-        },
-        `+=${index * 0.3}` // staggers each branch
-      );
-    });
-  }
+  rootNode: DecisionNode = {
+    id: 'level1',
+    level: 1,
+    note: 'C4',
+    children: [
+      {
+        id: 'level2-a',
+        level: 2,
+        note: 'D4',
+        children: [
+          {
+            id: 'level3-a1',
+            level: 3,
+            note: 'E4',
+            children: [{ id: 'flower-a', level: 4, note: 'F4' }],
+          },
+          {
+            id: 'level3-a2',
+            level: 3,
+            note: 'F4',
+            children: [{ id: 'flower-b', level: 4, note: 'G4' }],
+          },
+        ],
+      },
+      {
+        id: 'level2-b',
+        level: 2,
+        note: 'E4',
+        children: [
+          {
+            id: 'level3-b1',
+            level: 3,
+            note: 'G4',
+            children: [{ id: 'flower-c', level: 4, note: 'A4' }],
+          },
+        ],
+      },
+    ],
+  };
 }
