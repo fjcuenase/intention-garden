@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { DecisionNode } from './models/decision-node.model';
 import { gsap } from 'gsap';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-decision-node',
@@ -19,6 +20,7 @@ import { gsap } from 'gsap';
   styleUrl: './decision-node.component.scss',
 })
 export class DecisionNodeComponent implements AfterViewInit {
+  constructor(private audio: AudioService) {}
   @Input() node!: DecisionNode;
 
   @ViewChild('nodeRef', { static: true }) nodeRef!: ElementRef;
@@ -66,5 +68,47 @@ export class DecisionNodeComponent implements AfterViewInit {
         y: childRect.top - containerRect.top,
       };
     });
+  }
+
+  isLeaf(): boolean {
+    return !this.node.children || this.node.children.length === 0;
+  }
+
+  getMelodyPath(node: DecisionNode): string[] {
+    const melody: string[] = [];
+    let current: DecisionNode | undefined = node;
+    while (current) {
+      melody.unshift(current.note); // prepende la nota
+      current = current.parent;
+    }
+    return melody;
+  }
+
+  async onLeafSelected() {
+    const melody = this.getMelodyPath(this.node);
+
+    // Original
+    for (const note of melody) {
+      await this.audio.playNote(note, '8n');
+      await this.delay(200);
+    }
+
+    // Tronco (una octava abajo)
+    for (const note of melody) {
+      const lower = this.audio.transpose(note, -1);
+      await this.audio.playNote(lower, '8n');
+      await this.delay(200);
+    }
+
+    // Raíz (dos octavas abajo)
+    for (const note of melody) {
+      const deeper = this.audio.transpose(note, -2);
+      await this.audio.playNote(deeper, '8n');
+      await this.delay(200);
+    }
+  }
+
+  delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

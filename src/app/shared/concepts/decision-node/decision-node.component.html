@@ -14,7 +14,7 @@
     </svg>
   }
 
-  <div class="node" #nodeRef>
+  <div class="node" #nodeRef (click)="isLeaf() && onLeafSelected()">
     {{ node.note }}
   </div>
 

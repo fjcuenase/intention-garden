@@ -3,4 +3,5 @@ export interface DecisionNode {
   level: number;
   note: string;
   children?: DecisionNode[];
+  parent?: DecisionNode;
 }

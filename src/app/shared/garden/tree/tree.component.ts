@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DecisionNode } from '../../concepts/decision-node/models/decision-node.model';
 import { DecisionNodeComponent } from '../../concepts/decision-node/decision-node.component';
 
@@ -9,7 +9,18 @@ import { DecisionNodeComponent } from '../../concepts/decision-node/decision-nod
   templateUrl: './tree.component.html',
   styleUrl: './tree.component.scss',
 })
-export class TreeComponent {
+export class TreeComponent implements OnInit {
+  ngOnInit() {
+    this.assignParents(this.rootNode);
+  }
+
+  assignParents(node: DecisionNode, parent?: DecisionNode): void {
+    node.parent = parent;
+    for (const child of node.children || []) {
+      this.assignParents(child, node);
+    }
+  }
+
   rootNode: DecisionNode = {
     id: 'level1',
     level: 1,
