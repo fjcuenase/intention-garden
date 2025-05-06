@@ -1,11 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import {gsap} from 'gsap';
-import { BranchComponent } from "../../shared/garden/branch/branch.component";
+import { TreeComponent } from "../../shared/garden/tree/tree.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [BranchComponent],
+  imports: [TreeComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

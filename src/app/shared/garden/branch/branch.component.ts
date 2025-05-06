@@ -1,7 +1,8 @@
 import {
-  AfterViewInit,
   Component,
+  ElementRef,
   QueryList,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { FlowerComponent } from '../flower/flower.component';
@@ -17,8 +18,14 @@ import { gsap } from 'gsap';
 export class BranchComponent {
   @ViewChildren(FlowerComponent) flowers!: QueryList<FlowerComponent>;
 
+  @ViewChild('branchRef', { static: true }) branchRef!: ElementRef;
+
+  get element() {
+    return this.branchRef;
+  }
+
   ngAfterViewInit(): void {
-    const timeline = gsap.timeline({ delay: 0.5 });
+    const timeline = gsap.timeline({ delay: 0.4 });
 
     this.flowers.forEach((flower, index) => {
       timeline.fromTo(
@@ -27,11 +34,11 @@ export class BranchComponent {
         {
           scale: 1,
           opacity: 1,
-          duration: 0.8,
+          duration: 0.3,
           ease: 'back.out(1.7)',
           delay: index === 0 ? 0 : 0.1, // for spacing
         },
-        `+=${index * 0.2}` // spacing between animations
+        `+=${index * 0.1}` // spacing between animations
       );
     });
   }
