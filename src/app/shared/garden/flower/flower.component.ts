@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { gsap } from 'gsap';
 
 @Component({
@@ -7,19 +7,12 @@ import { gsap } from 'gsap';
   templateUrl: './flower.component.html',
   styleUrls: ['./flower.component.scss'],
 })
-export class FlowerComponent implements AfterViewInit {
-  @ViewChild('flower', { static: true }) flower!: ElementRef;
+export class FlowerComponent {
+  @ViewChild('flower', { static: true }) flowerRef!: ElementRef;
 
-  ngAfterViewInit() {
-    gsap.fromTo(
-      this.flower.nativeElement,
-      { scale: 0, opacity: 0 },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'elastic.out(1, 0.4)',
-      }
-    );
+  @Input() emoji: string = '🌸';
+
+  get element() {
+    return this.flowerRef;
   }
 }
