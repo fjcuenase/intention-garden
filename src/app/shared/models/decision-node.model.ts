@@ -1,7 +1,5 @@
 export interface DecisionNode {
   id: string;
-  level: number;
-  note: string;
-  children?: DecisionNode[];
+  children: DecisionNode[];
   parent?: DecisionNode;
 }

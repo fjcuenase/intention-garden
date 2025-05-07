@@ -21,4 +21,18 @@ export class AudioService {
     const newOctave = parseInt(octaveStr, 10) + octaves;
     return `${letter}${accidental || ''}${newOctave}`;
   }
+
+  async playMelodyWithDepth(melody: string[]): Promise<void> {
+    for (let depth = 0; depth >= -2; depth--) {
+      for (const note of melody) {
+        const transposed = this.transpose(note, depth);
+        await this.playNote(transposed, '8n');
+        await this.delay(200);
+      }
+    }
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 }

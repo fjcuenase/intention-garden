@@ -7,11 +7,13 @@ import {
   ViewChild,
   QueryList,
   ViewChildren,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { DecisionNode } from '../../models/decision-node.model';
 import { gsap } from 'gsap';
 import { AudioService } from '../../services/audio.service';
+import { DecisionNodeService } from '../../services/decision-node.service';
+import {MusicalNode} from '../../models/musical-node.model';
 
 @Component({
   selector: 'app-decision-node',
@@ -21,11 +23,14 @@ import { AudioService } from '../../services/audio.service';
   styleUrl: './decision-node.component.scss',
 })
 export class DecisionNodeComponent implements AfterViewInit {
-  constructor(private readonly audio: AudioService) {}
-  @Input() node!: DecisionNode;
+  constructor(
+    private readonly audio: AudioService,
+    private readonly nodeService: DecisionNodeService
+  ) {}
+
+  @Input() node!: MusicalNode;
 
   @ViewChild('nodeRef', { static: true }) nodeRef!: ElementRef;
-  @ViewChild('container', { static: true }) containerRef!: ElementRef;
   @ViewChildren(DecisionNodeComponent)
   childrenNodes!: QueryList<DecisionNodeComponent>;
 
@@ -37,7 +42,6 @@ export class DecisionNodeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.animateSelf();
-    setTimeout(() => this.updateLinePositions(), 0); // wait for children to render
   }
 
   animateSelf() {
@@ -49,78 +53,28 @@ export class DecisionNodeComponent implements AfterViewInit {
         opacity: 1,
         duration: 0.5,
         ease: 'back.out(1.7)',
-        delay: this.node.level * 0.3,
+        delay: 0.1,
       }
     );
   }
-  updateLinePositions() {
-    const nodeEl = this.nodeRef.nativeElement as HTMLElement;
-    const containerEl = this.containerRef.nativeElement as HTMLElement;
-
-    const nodeRect = nodeEl.getBoundingClientRect();
-    const containerRect = containerEl.getBoundingClientRect();
-
-    this.selfCoord = {
-      x: nodeRect.left - containerRect.left + nodeRect.width / 2,
-      y: nodeRect.top - containerRect.top + nodeRect.height,
-    };
-
-    this.childCoords = this.childrenNodes.map((child) => {
-      const childRect = child.nodeRef.nativeElement.getBoundingClientRect();
-      return {
-        x: childRect.left - containerRect.left + childRect.width / 2,
-        y: childRect.top - containerRect.top,
-      };
-    });
-  }
 
   isLeaf(): boolean {
-    return !this.node.children || this.node.children.length === 0;
-  }
-
-  getMelodyPath(node: DecisionNode): string[] {
-    const melody: string[] = [];
-    let current: DecisionNode | undefined = node;
-    while (current) {
-      melody.unshift(current.note); // prepende la nota
-      current = current.parent;
-    }
-    return melody;
+    return this.nodeService.isLeaf(this.node);
   }
 
   async onLeafSelected() {
-    const melody = this.getMelodyPath(this.node);
+    const melody = this.nodeService.getMelodyPath(this.node);
     this.sendToTrunk.emit(this.node);
-
-    // Original
-    for (const note of melody) {
-      await this.audio.playNote(note, '8n');
-      await this.delay(200);
-    }
-
-    // Tronco (una octava abajo)
-    for (const note of melody) {
-      const lower = this.audio.transpose(note, -1);
-      await this.audio.playNote(lower, '8n');
-      await this.delay(200);
-    }
-
-    // Raíz (dos octavas abajo)
-    for (const note of melody) {
-      const deeper = this.audio.transpose(note, -2);
-      await this.audio.playNote(deeper, '8n');
-      await this.delay(200);
-    }
-  }
-
-  delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    await this.audio.playMelodyWithDepth(melody);
   }
 
   listenChildren(node: DecisionNode): void {
-    let isLeaf = !node.children || node.children.length === 0;
-    if (isLeaf) {
+    if (this.nodeService.isLeaf(node)) {
       this.sendToTrunk.emit(this.node);
     }
+  }
+
+  get musicalChildren(): MusicalNode[] {
+    return this.node.children as MusicalNode[];
   }
 }
