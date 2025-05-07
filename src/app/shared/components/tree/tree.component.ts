@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DecisionNode } from '../../concepts/decision-node/models/decision-node.model';
-import { DecisionNodeComponent } from '../../concepts/decision-node/decision-node.component';
+import { DecisionNode } from '../../models/decision-node.model';
+import { DecisionNodeComponent } from '../decision-node/decision-node.component';
 
 @Component({
   selector: 'app-tree',
@@ -25,13 +25,12 @@ export class TreeComponent implements OnInit {
     let newTree: DecisionNode | undefined = undefined;
 
     while (current) {
-      const clone: DecisionNode = {
+      newTree = {
         id: current.id,
         level: current.level,
         note: current.note,
         children: newTree ? [newTree] : undefined,
       };
-      newTree = clone;
       current = current.parent;
     }
 

@@ -1,6 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import {gsap} from 'gsap';
-import { TreeComponent } from "../../shared/garden/tree/tree.component";
+import { Component } from '@angular/core';
+import { TreeComponent } from "../../shared/components/tree/tree.component";
 
 @Component({
   selector: 'app-home',

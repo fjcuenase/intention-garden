@@ -7,10 +7,9 @@ import {
   ViewChild,
   QueryList,
   ViewChildren,
-  OnInit,
   EventEmitter
 } from '@angular/core';
-import { DecisionNode } from './models/decision-node.model';
+import { DecisionNode } from '../../models/decision-node.model';
 import { gsap } from 'gsap';
 import { AudioService } from '../../services/audio.service';
 
@@ -22,7 +21,7 @@ import { AudioService } from '../../services/audio.service';
   styleUrl: './decision-node.component.scss',
 })
 export class DecisionNodeComponent implements AfterViewInit {
-  constructor(private audio: AudioService) {}
+  constructor(private readonly audio: AudioService) {}
   @Input() node!: DecisionNode;
 
   @ViewChild('nodeRef', { static: true }) nodeRef!: ElementRef;
