@@ -10,6 +10,34 @@ import { DecisionNodeComponent } from '../../concepts/decision-node/decision-nod
   styleUrl: './tree.component.scss',
 })
 export class TreeComponent implements OnInit {
+  trunkNodes: DecisionNode = {
+    id: 'level1',
+    level: 1,
+    note: 'C4',
+    children: [],
+  };
+
+  selfCoord = { x: 0, y: 0 };
+  childCoords: { x: number; y: number }[] = [];
+
+  addToTrunk(node: DecisionNode) {
+    let current: DecisionNode | undefined = node;
+    let newTree: DecisionNode | undefined = undefined;
+
+    while (current) {
+      const clone: DecisionNode = {
+        id: current.id,
+        level: current.level,
+        note: current.note,
+        children: newTree ? [newTree] : undefined,
+      };
+      newTree = clone;
+      current = current.parent;
+    }
+
+    if (newTree != undefined) this.trunkNodes = newTree;
+  }
+
   ngOnInit() {
     this.assignParents(this.rootNode);
   }

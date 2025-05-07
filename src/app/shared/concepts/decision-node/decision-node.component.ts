@@ -1,12 +1,14 @@
 import {
   Component,
   Input,
+  Output,
   AfterViewInit,
   ElementRef,
   ViewChild,
   QueryList,
   ViewChildren,
-  OnInit
+  OnInit,
+  EventEmitter
 } from '@angular/core';
 import { DecisionNode } from './models/decision-node.model';
 import { gsap } from 'gsap';
@@ -27,6 +29,9 @@ export class DecisionNodeComponent implements AfterViewInit {
   @ViewChild('container', { static: true }) containerRef!: ElementRef;
   @ViewChildren(DecisionNodeComponent)
   childrenNodes!: QueryList<DecisionNodeComponent>;
+
+  @Output()
+  sendToTrunk = new EventEmitter<DecisionNode>();
 
   selfCoord = { x: 0, y: 0 };
   childCoords: { x: number; y: number }[] = [];
@@ -86,6 +91,7 @@ export class DecisionNodeComponent implements AfterViewInit {
 
   async onLeafSelected() {
     const melody = this.getMelodyPath(this.node);
+    this.sendToTrunk.emit(this.node);
 
     // Original
     for (const note of melody) {
@@ -110,5 +116,12 @@ export class DecisionNodeComponent implements AfterViewInit {
 
   delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  listenChildren(node: DecisionNode): void {
+    let isLeaf = !node.children || node.children.length === 0;
+    if (isLeaf) {
+      this.sendToTrunk.emit(this.node);
+    }
   }
 }

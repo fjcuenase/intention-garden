@@ -21,7 +21,7 @@
   @if (node.children?.length) {
     <div class="children">
       @for (child of node.children; track child.id) {
-        <app-decision-node [node]="child"></app-decision-node>
+        <app-decision-node [node]="child" (sendToTrunk)="isCalled()"></app-decision-node>
       }
     </div>
   }
